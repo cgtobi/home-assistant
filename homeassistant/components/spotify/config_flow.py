@@ -6,6 +6,7 @@ from spotipy import Spotify
 import voluptuous as vol
 
 from homeassistant import config_entries
+from homeassistant.components import persistent_notification
 from homeassistant.helpers import config_entry_oauth2_flow
 
 from .const import DOMAIN, SPOTIFY_SCOPES
@@ -63,6 +64,15 @@ class SpotifyFlowHandler(
         """Perform reauth upon migration of old entries."""
         if entry:
             self.entry = entry
+
+        assert self.hass
+        persistent_notification.async_create(
+            self.hass,
+            f"Spotify integration for account {entry['id']} needs to be re-authenticated. Please go to the integrations page to re-configure it.",
+            "Spotify re-authentication",
+            "spotify_reauth",
+        )
+
         return await self.async_step_reauth_confirm()
 
     async def async_step_reauth_confirm(
@@ -76,6 +86,10 @@ class SpotifyFlowHandler(
                 data_schema=vol.Schema({}),
                 errors={},
             )
+
+        assert self.hass
+        persistent_notification.async_dismiss(self.hass, "spotify_reauth")
+
         return await self.async_step_pick_implementation(
             user_input={"implementation": self.entry["auth_implementation"]}
         )
