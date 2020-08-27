@@ -138,9 +138,6 @@ class SpotifyMediaPlayer(MediaPlayerEntity):
         self._session = session
         self._spotify = spotify
         self._scope_ok = set(session.token["scope"].split(" ")) == set(SPOTIFY_SCOPES)
-        if not self._scope_ok:
-            print(set(session.token["scope"].split(" ")) == set(SPOTIFY_SCOPES))
-            print(set(session.token["scope"].split(" ")), set(SPOTIFY_SCOPES))
 
         self._currently_playing: Optional[dict] = {}
         self._devices: Optional[List[dict]] = []
