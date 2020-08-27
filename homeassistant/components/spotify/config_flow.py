@@ -17,6 +17,7 @@ class SpotifyFlowHandler(
     """Config flow to handle Spotify OAuth2 authentication."""
 
     DOMAIN = DOMAIN
+    VERSION = 2
     CONNECTION_CLASS = config_entries.CONN_CLASS_CLOUD_POLL
 
     @property
@@ -47,3 +48,7 @@ class SpotifyFlowHandler(
         await self.async_set_unique_id(current_user["id"])
 
         return self.async_create_entry(title=name, data=data)
+
+    async def async_step_reauth(self, entry_data):
+        """Perform reauth upon migration of old entries."""
+        return await self.async_oauth_create_entry(entry_data)

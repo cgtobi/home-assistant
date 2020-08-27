@@ -138,6 +138,9 @@ class SpotifyMediaPlayer(MediaPlayerEntity):
         self._session = session
         self._spotify = spotify
         self._scope_ok = set(session.token["scope"].split(" ")) == set(SPOTIFY_SCOPES)
+        if not self._scope_ok:
+            print(set(session.token["scope"].split(" ")) == set(SPOTIFY_SCOPES))
+            print(set(session.token["scope"].split(" ")), set(SPOTIFY_SCOPES))
 
         self._currently_playing: Optional[dict] = {}
         self._devices: Optional[List[dict]] = []
@@ -296,7 +299,7 @@ class SpotifyMediaPlayer(MediaPlayerEntity):
     def supported_features(self) -> int:
         """Return the media player features that are supported."""
         if self._me["product"] != "premium":
-            return 0
+            return SUPPORT_SPOTIFY
         return SUPPORT_SPOTIFY
 
     @spotify_exception_handler
