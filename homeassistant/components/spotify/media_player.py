@@ -296,7 +296,7 @@ class SpotifyMediaPlayer(MediaPlayerEntity):
     def supported_features(self) -> int:
         """Return the media player features that are supported."""
         if self._me["product"] != "premium":
-            return SUPPORT_SPOTIFY
+            return 0
         return SUPPORT_SPOTIFY
 
     @spotify_exception_handler
