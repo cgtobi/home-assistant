@@ -64,14 +64,11 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
 async def async_migrate_entry(hass, entry):
     """Handle migration of a previous version config entry."""
     if entry.version == 1:
-        data = {**entry.data}
-        data["token"]["scope"] = " ".join(SPOTIFY_SCOPES)
         hass.async_create_task(
             hass.config_entries.flow.async_init(
-                DOMAIN, context={"source": "reauth"}, data=data,
+                DOMAIN, context={"source": "reauth"}, data=entry.data,
             )
         )
-        return False
 
     return True
 
