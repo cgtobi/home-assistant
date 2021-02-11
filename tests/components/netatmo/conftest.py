@@ -70,7 +70,7 @@ def selected_platforms(platforms=["camera", "climate", "light", "sensor"]):
 
 @pytest.fixture(name="entry")
 async def mock_entry_fixture(hass, config_entry):
-    """Mock a component."""
+    """Mock setup of all platforms."""
     with selected_platforms():
         await hass.config_entries.async_setup(config_entry.entry_id)
     return config_entry
@@ -78,7 +78,7 @@ async def mock_entry_fixture(hass, config_entry):
 
 @pytest.fixture(name="sensor_entry")
 async def mock_sensor_entry_fixture(hass, config_entry):
-    """Mock a component."""
+    """Mock setup of sensor platform."""
     with selected_platforms(["sensor"]):
         await hass.config_entries.async_setup(config_entry.entry_id)
     return config_entry
@@ -86,7 +86,7 @@ async def mock_sensor_entry_fixture(hass, config_entry):
 
 @pytest.fixture(name="camera_entry")
 async def mock_camera_entry_fixture(hass, config_entry):
-    """Mock a component."""
+    """Mock setup of camera platform."""
     with selected_platforms(["camera"]):
         await hass.config_entries.async_setup(config_entry.entry_id)
     return config_entry
@@ -94,7 +94,7 @@ async def mock_camera_entry_fixture(hass, config_entry):
 
 @pytest.fixture(name="light_entry")
 async def mock_light_entry_fixture(hass, config_entry):
-    """Mock a component."""
+    """Mock setup of light platform."""
     with selected_platforms(["light"]):
         await hass.config_entries.async_setup(config_entry.entry_id)
     return config_entry
@@ -102,7 +102,7 @@ async def mock_light_entry_fixture(hass, config_entry):
 
 @pytest.fixture(name="climate_entry")
 async def mock_climate_entry_fixture(hass, config_entry):
-    """Mock a component."""
+    """Mock setup of climate platform."""
     with selected_platforms(["climate"]):
         await hass.config_entries.async_setup(config_entry.entry_id)
     return config_entry
@@ -110,7 +110,7 @@ async def mock_climate_entry_fixture(hass, config_entry):
 
 @pytest.fixture(name="entry_error")
 async def mock_entry_error_fixture(hass, config_entry):
-    """Mock a component."""
+    """Mock erroneous setup of platforms."""
     with patch(
         "homeassistant.components.netatmo.api.ConfigEntryNetatmoAuth"
     ) as mock_auth, patch(
