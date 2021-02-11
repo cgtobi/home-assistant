@@ -1,4 +1,5 @@
 """Provide common Netatmo fixtures."""
+from contextlib import contextmanager
 from time import time
 from unittest.mock import patch
 
@@ -53,10 +54,10 @@ async def mock_config_entry_fixture(hass):
     return mock_entry
 
 
-@pytest.fixture(name="entry")
-async def mock_entry_fixture(hass, config_entry):
-    """Mock a component."""
-    with patch(
+@contextmanager
+def selected_platforms(platforms=["camera", "climate", "light", "sensor"]):
+    """Restrict loaded platforms to list given."""
+    with patch("homeassistant.components.netatmo.PLATFORMS", platforms), patch(
         "homeassistant.components.netatmo.api.ConfigEntryNetatmoAuth"
     ) as mock_auth, patch(
         "homeassistant.helpers.config_entry_oauth2_flow.async_get_config_entry_implementation",
@@ -64,72 +65,46 @@ async def mock_entry_fixture(hass, config_entry):
         "homeassistant.components.webhook.async_generate_url"
     ):
         mock_auth.return_value.post_request.side_effect = fake_post_request
-        await hass.config_entries.async_setup(config_entry.entry_id)
+        yield
 
+
+@pytest.fixture(name="entry")
+async def mock_entry_fixture(hass, config_entry):
+    """Mock a component."""
+    with selected_platforms():
+        await hass.config_entries.async_setup(config_entry.entry_id)
     return config_entry
 
 
 @pytest.fixture(name="sensor_entry")
 async def mock_sensor_entry_fixture(hass, config_entry):
     """Mock a component."""
-    with patch("homeassistant.components.netatmo.PLATFORMS", ["sensor"]), patch(
-        "homeassistant.components.netatmo.api.ConfigEntryNetatmoAuth"
-    ) as mock_auth, patch(
-        "homeassistant.helpers.config_entry_oauth2_flow.async_get_config_entry_implementation",
-    ), patch(
-        "homeassistant.components.webhook.async_generate_url"
-    ):
-        mock_auth.return_value.post_request.side_effect = fake_post_request
+    with selected_platforms(["sensor"]):
         await hass.config_entries.async_setup(config_entry.entry_id)
-
     return config_entry
 
 
 @pytest.fixture(name="camera_entry")
 async def mock_camera_entry_fixture(hass, config_entry):
     """Mock a component."""
-    with patch("homeassistant.components.netatmo.PLATFORMS", ["camera"]), patch(
-        "homeassistant.components.netatmo.api.ConfigEntryNetatmoAuth"
-    ) as mock_auth, patch(
-        "homeassistant.helpers.config_entry_oauth2_flow.async_get_config_entry_implementation",
-    ), patch(
-        "homeassistant.components.webhook.async_generate_url"
-    ):
-        mock_auth.return_value.post_request.side_effect = fake_post_request
+    with selected_platforms(["camera"]):
         await hass.config_entries.async_setup(config_entry.entry_id)
-
     return config_entry
 
 
 @pytest.fixture(name="light_entry")
 async def mock_light_entry_fixture(hass, config_entry):
     """Mock a component."""
-    with patch("homeassistant.components.netatmo.PLATFORMS", ["light"]), patch(
-        "homeassistant.components.netatmo.api.ConfigEntryNetatmoAuth"
-    ) as mock_auth, patch(
-        "homeassistant.helpers.config_entry_oauth2_flow.async_get_config_entry_implementation",
-    ), patch(
-        "homeassistant.components.webhook.async_generate_url"
-    ):
-        mock_auth.return_value.post_request.side_effect = fake_post_request
+    with selected_platforms(["light"]):
         await hass.config_entries.async_setup(config_entry.entry_id)
-
     return config_entry
 
 
 @pytest.fixture(name="climate_entry")
 async def mock_climate_entry_fixture(hass, config_entry):
     """Mock a component."""
-    with patch("homeassistant.components.netatmo.PLATFORMS", ["climate"]), patch(
-        "homeassistant.components.netatmo.api.ConfigEntryNetatmoAuth"
-    ) as mock_auth, patch(
-        "homeassistant.helpers.config_entry_oauth2_flow.async_get_config_entry_implementation",
-    ), patch(
-        "homeassistant.components.webhook.async_generate_url"
-    ):
-        mock_auth.return_value.post_request.side_effect = fake_post_request
+    with selected_platforms(["climate"]):
         await hass.config_entries.async_setup(config_entry.entry_id)
-
     return config_entry
 
 
