@@ -5,32 +5,6 @@ from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.util.aiohttp import MockRequest
 
 
-async def test_webhook(hass):
-    """Test that webhook events are processed."""
-    webhook_called = False
-
-    async def handle_event(_):
-        nonlocal webhook_called
-        webhook_called = True
-
-    response = (
-        b'{"user_id": "123", "user": {"id": "123", "email": "foo@bar.com"},'
-        b'"push_type": "webhook_activation"}'
-    )
-    request = MockRequest(content=response, mock_source="test")
-
-    async_dispatcher_connect(
-        hass,
-        "signal-netatmo-webhook-None",
-        handle_event,
-    )
-
-    await async_handle_webhook(hass, "webhook_id", request)
-    await hass.async_block_till_done()
-
-    assert webhook_called
-
-
 async def test_webhook_error_in_data(hass):
     """Test that errors in webhook data are handled."""
     webhook_called = False
@@ -52,38 +26,6 @@ async def test_webhook_error_in_data(hass):
     await hass.async_block_till_done()
 
     assert not webhook_called
-
-
-async def test_webhook_climate_event(hass):
-    """Test that climate events are handled."""
-    webhook_called = False
-
-    async def handle_event(_):
-        nonlocal webhook_called
-        webhook_called = True
-
-    response = (
-        b'{"user_id": "123", "user": {"id": "123", "email": "foo@bar.com"},'
-        b'"home_id": "456", "event_type": "therm_mode",'
-        b'"home": {"id": "456", "therm_mode": "away"},'
-        b'"mode": "away", "previous_mode": "schedule", "push_type": "home_event_changed"}'
-    )
-    request = MockRequest(content=response, mock_source="test")
-
-    hass.data["netatmo"] = {
-        DATA_DEVICE_IDS: {},
-    }
-
-    async_dispatcher_connect(
-        hass,
-        "signal-netatmo-webhook-therm_mode",
-        handle_event,
-    )
-
-    await async_handle_webhook(hass, "webhook_id", request)
-    await hass.async_block_till_done()
-
-    assert webhook_called
 
 
 async def test_webhook_person_event(hass):
