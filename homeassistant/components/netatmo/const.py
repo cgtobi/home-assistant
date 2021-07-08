@@ -5,6 +5,7 @@ from homeassistant.components.light import DOMAIN as LIGHT_DOMAIN
 from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN
 
 API = "api"
+UNKNOWN = "unknown"
 
 DOMAIN = "netatmo"
 MANUFACTURER = "Netatmo"
@@ -75,7 +76,7 @@ DATA_SCHEDULES = "netatmo_schedules"
 NETATMO_WEBHOOK_URL = None
 NETATMO_EVENT = "netatmo_event"
 
-DEFAULT_PERSON = "Unknown"
+DEFAULT_PERSON = UNKNOWN
 DEFAULT_DISCOVERY = True
 DEFAULT_WEBHOOKS = False
 
