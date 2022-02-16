@@ -46,13 +46,7 @@ from .const import (
     SIGNAL_NAME,
     TYPE_WEATHER,
 )
-from .data_handler import (
-    HOMECOACH_DATA_CLASS_NAME,
-    PUBLICDATA_DATA_CLASS_NAME,
-    WEATHERSTATION_DATA_CLASS_NAME,
-    NetatmoDataHandler,
-    NetatmoDevice,
-)
+from .data_handler import AIR_CARE, PUBLIC, WEATHER, NetatmoDataHandler, NetatmoDevice
 from .helper import NetatmoArea
 from .netatmo_entity_base import NetatmoBase
 
@@ -325,15 +319,19 @@ BATTERY_VALUES = {
     ),
 }
 
-PUBLIC = "public"
-
 
 async def async_setup_entry(
     hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
 ) -> None:
     """Set up the Netatmo weather and homecoach platform."""
     data_handler = hass.data[DOMAIN][entry.entry_id][DATA_HANDLER]
-    platform_not_ready = True
+
+    account_topology = data_handler.account
+
+    if not account_topology or account_topology.raw_data == {}:
+        raise PlatformNotReady
+
+    platform_not_ready = None
 
     async def find_entities(data_class_name: str) -> list:
         """Find all entities."""
@@ -383,10 +381,10 @@ async def async_setup_entry(
         return entities
 
     for data_class_name in (
-        WEATHERSTATION_DATA_CLASS_NAME,
-        HOMECOACH_DATA_CLASS_NAME,
+        WEATHER,
+        AIR_CARE,
     ):
-        data_class = data_handler.data.get(data_class_name)
+        data_class = data_handler.account
 
         if data_class and data_class.raw_data:
             platform_not_ready = False
@@ -409,7 +407,7 @@ async def async_setup_entry(
         for area in [
             NetatmoArea(**i) for i in entry.options.get(CONF_WEATHER_AREAS, {}).values()
         ]:
-            signal_name = f"{PUBLICDATA_DATA_CLASS_NAME}-{area.uuid}"
+            signal_name = f"{PUBLIC}-{area.uuid}"
 
             if area.area_name in entities:
                 entities.pop(area.area_name)
@@ -423,7 +421,7 @@ async def async_setup_entry(
                     continue
 
             await data_handler.register_data_class(
-                PUBLICDATA_DATA_CLASS_NAME,
+                PUBLIC,
                 signal_name,
                 None,
                 lat_ne=area.lat_ne,
@@ -594,7 +592,7 @@ class NetatmoClimateBatterySensor(NetatmoBase, SensorEntity):
             device_class=SensorDeviceClass.BATTERY,
         )
 
-        self._module = netatmo_device.device
+        self._module = cast(pyatmo.modules.NRV, netatmo_device.device)
         self._id = netatmo_device.parent_id
         self._attr_name = f"{self._module.name} {self.entity_description.name}"
 
@@ -618,12 +616,12 @@ class NetatmoClimateBatterySensor(NetatmoBase, SensorEntity):
         self._attr_available = True
         self._attr_native_value = self._process_battery_state()
 
-    def _process_battery_state(self) -> int | None:
+    def _process_battery_state(self) -> int:
         """Construct room status."""
         if battery_state := self._module.battery_state:
             return process_battery_percentage(battery_state)
 
-        return None
+        return 0
 
 
 def process_battery_percentage(data: str) -> int:
@@ -732,11 +730,11 @@ class NetatmoPublicSensor(NetatmoBase, SensorEntity):
         super().__init__(data_handler)
         self.entity_description = description
 
-        self._signal_name = f"{PUBLICDATA_DATA_CLASS_NAME}-{area.uuid}"
+        self._signal_name = f"{PUBLIC}-{area.uuid}"
 
         self._data_classes.append(
             {
-                "name": PUBLICDATA_DATA_CLASS_NAME,
+                "name": PUBLIC,
                 "lat_ne": area.lat_ne,
                 "lon_ne": area.lon_ne,
                 "lat_sw": area.lat_sw,
@@ -788,15 +786,15 @@ class NetatmoPublicSensor(NetatmoBase, SensorEntity):
         if self.area == area:
             return
 
-        await self.data_handler.unregister_data_class(
+        await self.data_handler.unsubscribe(
             self._signal_name, self.async_update_callback
         )
 
         self.area = area
-        self._signal_name = f"{PUBLICDATA_DATA_CLASS_NAME}-{area.uuid}"
+        self._signal_name = f"{PUBLIC}-{area.uuid}"
         self._data_classes = [
             {
-                "name": PUBLICDATA_DATA_CLASS_NAME,
+                "name": PUBLIC,
                 "lat_ne": area.lat_ne,
                 "lon_ne": area.lon_ne,
                 "lat_sw": area.lat_sw,
@@ -807,8 +805,8 @@ class NetatmoPublicSensor(NetatmoBase, SensorEntity):
         ]
         self._mode = area.mode
         self._show_on_map = area.show_on_map
-        await self.data_handler.register_data_class(
-            PUBLICDATA_DATA_CLASS_NAME,
+        await self.data_handler.subscribe(
+            PUBLIC,
             self._signal_name,
             self.async_update_callback,
             lat_ne=area.lat_ne,
