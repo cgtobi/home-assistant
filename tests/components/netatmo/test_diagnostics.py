@@ -39,16 +39,24 @@ async def test_entry_diagnostics(hass, hass_client, config_entry):
                 "expires_in": 60,
                 "refresh_token": REDACTED,
                 "scope": [
-                    "read_station",
-                    "read_camera",
                     "access_camera",
-                    "write_camera",
-                    "read_presence",
                     "access_presence",
-                    "write_presence",
+                    "read_bubendorff",
+                    "read_camera",
+                    "read_doorbell",
                     "read_homecoach",
+                    "read_magellan",
+                    "read_mx",
+                    "read_presence",
+                    "read_smarther",
                     "read_smokedetector",
+                    "read_station",
                     "read_thermostat",
+                    "write_bubendorff",
+                    "write_camera",
+                    "write_magellan",
+                    "write_presence",
+                    "write_smarther",
                     "write_thermostat",
                 ],
                 "type": "Bearer",
@@ -88,5 +96,5 @@ async def test_entry_diagnostics(hass, hass_client, config_entry):
         "webhook_registered": False,
     }
 
-    for home in result["data"]["AsyncClimateTopology"]["homes"]:
+    for home in result["data"]["account"]["homes"]:
         assert home["coordinates"] == REDACTED

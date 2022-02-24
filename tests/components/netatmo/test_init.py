@@ -6,6 +6,7 @@ from unittest.mock import AsyncMock, patch
 
 import aiohttp
 import pyatmo
+from pyatmo.const import ALL_SCOPES
 
 from homeassistant import config_entries
 from homeassistant.components.netatmo import DOMAIN
@@ -15,7 +16,6 @@ from homeassistant.setup import async_setup_component
 from homeassistant.util import dt
 
 from .common import (
-    ALL_SCOPES,
     FAKE_WEBHOOK_ACTIVATION,
     fake_post_request,
     selected_platforms,
@@ -112,7 +112,7 @@ async def test_setup_component_with_config(hass, config_entry):
 
         await hass.async_block_till_done()
 
-        assert fake_post_hits == 9
+        assert fake_post_hits == 5
         mock_impl.assert_called_once()
         mock_webhook.assert_called_once()
 
@@ -359,7 +359,7 @@ async def test_setup_component_with_delay(hass, config_entry):
 
         await hass.async_block_till_done()
 
-        assert mock_post_request.call_count == 8
+        assert mock_post_request.call_count == 4
 
         mock_impl.assert_called_once()
         mock_webhook.assert_not_called()

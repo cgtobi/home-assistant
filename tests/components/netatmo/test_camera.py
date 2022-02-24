@@ -44,7 +44,7 @@ async def test_setup_component_with_webhook(hass, config_entry, netatmo_auth):
     }
     await simulate_webhook(hass, webhook_id, response)
 
-    assert hass.states.get(camera_entity_indoor).state == "idle"
+    assert hass.states.get(camera_entity_indoor).state == "unavailable"
 
     response = {
         "event_type": "on",
@@ -93,26 +93,36 @@ async def test_setup_component_with_webhook(hass, config_entry, netatmo_auth):
     assert hass.states.get(camera_entity_indoor).state == "streaming"
     assert hass.states.get(camera_entity_outdoor).attributes["light_state"] == "auto"
 
-    with patch("pyatmo.camera.AsyncCameraData.async_set_state") as mock_set_state:
+    with patch("pyatmo.home.NetatmoHome.async_set_state") as mock_set_state:
         await hass.services.async_call(
             "camera", "turn_off", service_data={"entity_id": "camera.netatmo_hall"}
         )
         await hass.async_block_till_done()
         mock_set_state.assert_called_once_with(
-            home_id="91763b24c43d3e344f424e8b",
-            camera_id="12:34:56:00:f1:62",
-            monitoring="off",
+            {
+                "modules": [
+                    {
+                        "id": "12:34:56:00:f1:62",
+                        "monitoring": "off",
+                    }
+                ]
+            }
         )
 
-    with patch("pyatmo.camera.AsyncCameraData.async_set_state") as mock_set_state:
+    with patch("pyatmo.home.NetatmoHome.async_set_state") as mock_set_state:
         await hass.services.async_call(
             "camera", "turn_on", service_data={"entity_id": "camera.netatmo_hall"}
         )
         await hass.async_block_till_done()
         mock_set_state.assert_called_once_with(
-            home_id="91763b24c43d3e344f424e8b",
-            camera_id="12:34:56:00:f1:62",
-            monitoring="on",
+            {
+                "modules": [
+                    {
+                        "id": "12:34:56:00:f1:62",
+                        "monitoring": "on",
+                    }
+                ]
+            }
         )
 
 
@@ -135,6 +145,7 @@ async def test_camera_image_local(hass, config_entry, requests_mock, netatmo_aut
 
     assert cam is not None
     assert cam.state == STATE_STREAMING
+    assert cam.name == "Netatmo Hall"
 
     stream_source = await camera.async_get_stream_source(hass, camera_entity_indoor)
     assert stream_source == stream_uri
@@ -156,10 +167,7 @@ async def test_camera_image_vpn(hass, config_entry, requests_mock, netatmo_auth)
 
     await hass.async_block_till_done()
 
-    uri = (
-        "https://prodvpn-eu-2.netatmo.net/restricted/10.255.248.91/"
-        "6d278460699e56180d47ab47169efb31/MpEylTU2MDYzNjRVD-LJxUnIndumKzLboeAwMDqTTw,,"
-    )
+    uri = "https://prodvpn-eu-6.netatmo.net/10.20.30.41/333333333333/444444444444,,"
     stream_uri = uri + "/live/files/high/index.m3u8"
     camera_entity_indoor = "camera.netatmo_garden"
     cam = hass.states.get(camera_entity_indoor)
@@ -193,7 +201,7 @@ async def test_service_set_person_away(hass, config_entry, netatmo_auth):
     }
 
     with patch(
-        "pyatmo.camera.AsyncCameraData.async_set_persons_away"
+        "pyatmo.home.NetatmoHome.async_set_persons_away"
     ) as mock_set_persons_away:
         await hass.services.async_call(
             "netatmo", SERVICE_SET_PERSON_AWAY, service_data=data
@@ -201,7 +209,6 @@ async def test_service_set_person_away(hass, config_entry, netatmo_auth):
         await hass.async_block_till_done()
         mock_set_persons_away.assert_called_once_with(
             person_id="91827376-7e04-5298-83af-a0cb8372dff3",
-            home_id="91763b24c43d3e344f424e8b",
         )
 
     data = {
@@ -209,7 +216,7 @@ async def test_service_set_person_away(hass, config_entry, netatmo_auth):
     }
 
     with patch(
-        "pyatmo.camera.AsyncCameraData.async_set_persons_away"
+        "pyatmo.home.NetatmoHome.async_set_persons_away"
     ) as mock_set_persons_away:
         await hass.services.async_call(
             "netatmo", SERVICE_SET_PERSON_AWAY, service_data=data
@@ -217,7 +224,6 @@ async def test_service_set_person_away(hass, config_entry, netatmo_auth):
         await hass.async_block_till_done()
         mock_set_persons_away.assert_called_once_with(
             person_id=None,
-            home_id="91763b24c43d3e344f424e8b",
         )
 
 
@@ -290,7 +296,7 @@ async def test_service_set_persons_home(hass, config_entry, netatmo_auth):
     }
 
     with patch(
-        "pyatmo.camera.AsyncCameraData.async_set_persons_home"
+        "pyatmo.home.NetatmoHome.async_set_persons_home"
     ) as mock_set_persons_home:
         await hass.services.async_call(
             "netatmo", SERVICE_SET_PERSONS_HOME, service_data=data
@@ -298,7 +304,6 @@ async def test_service_set_persons_home(hass, config_entry, netatmo_auth):
         await hass.async_block_till_done()
         mock_set_persons_home.assert_called_once_with(
             person_ids=["91827374-7e04-5298-83ad-a0cb8372dff1"],
-            home_id="91763b24c43d3e344f424e8b",
         )
 
 
@@ -316,16 +321,20 @@ async def test_service_set_camera_light(hass, config_entry, netatmo_auth):
         "camera_light_mode": "on",
     }
 
-    with patch("pyatmo.camera.AsyncCameraData.async_set_state") as mock_set_state:
+    expected_data = {
+        "modules": [
+            {
+                "id": "12:34:56:00:a5:a4",
+                "floodlight": "on",
+            },
+        ],
+    }
+    with patch("pyatmo.home.NetatmoHome.async_set_state") as mock_set_state:
         await hass.services.async_call(
             "netatmo", SERVICE_SET_CAMERA_LIGHT, service_data=data
         )
         await hass.async_block_till_done()
-        mock_set_state.assert_called_once_with(
-            home_id="91763b24c43d3e344f424e8b",
-            camera_id="12:34:56:00:a5:a4",
-            floodlight="on",
-        )
+        mock_set_state.assert_called_once_with(expected_data)
 
 
 async def test_camera_reconnect_webhook(hass, config_entry):
@@ -364,7 +373,7 @@ async def test_camera_reconnect_webhook(hass, config_entry):
         await simulate_webhook(hass, webhook_id, response)
         await hass.async_block_till_done()
 
-        assert fake_post_hits == 8
+        assert fake_post_hits == 4
 
         calls = fake_post_hits
 
@@ -446,7 +455,7 @@ async def test_setup_component_no_devices(hass, config_entry):
         await hass.config_entries.async_setup(config_entry.entry_id)
         await hass.async_block_till_done()
 
-        assert fake_post_hits == 4
+        assert fake_post_hits == 1
 
 
 async def test_camera_image_raises_exception(hass, config_entry, requests_mock):
@@ -491,4 +500,4 @@ async def test_camera_image_raises_exception(hass, config_entry, requests_mock):
         await camera.async_get_image(hass, camera_entity_indoor)
 
     assert excinfo.value.args == ("Unable to get image",)
-    assert fake_post_hits == 9
+    assert fake_post_hits == 5
