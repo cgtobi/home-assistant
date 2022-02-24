@@ -15,6 +15,25 @@
                     "is_local": true
                 },
                 {
+                    "type": "NOC",
+                    "firmware_revision": 3002000,
+                    "monitoring": "on",
+                    "sd_status": 4,
+                    "connection": "wifi",
+                    "homekit_status": "upgradable",
+                    "floodlight": "auto",
+                    "timelapse_available": true,
+                    "id": "12:34:56:00:a5:a4",
+                    "vpn_url": "https://prodvpn-eu-6.netatmo.net/10.20.30.41/333333333333/444444444444,,",
+                    "is_local": false,
+                    "network_lock": false,
+                    "firmware_name": "3.2.0",
+                    "wifi_strength": 62,
+                    "alim_status": 2,
+                    "locked": false,
+                    "wifi_state": "high"
+                },
+                {
                     "id": "12:34:56:00:fa:d0",
                     "type": "NAPlug",
                     "firmware_revision": 174,

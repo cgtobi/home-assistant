@@ -37,9 +37,7 @@ async def test_select_schedule_thermostats(hass, config_entry, caplog, netatmo_a
     ]
 
     # Test setting a different schedule
-    with patch(
-        "pyatmo.climate.AsyncClimate.async_switch_home_schedule"
-    ) as mock_switch_home_schedule:
+    with patch("pyatmo.home.NetatmoHome.async_switch_schedule") as mock_switch_schedule:
         await hass.services.async_call(
             SELECT_DOMAIN,
             SERVICE_SELECT_OPTION,
@@ -50,7 +48,7 @@ async def test_select_schedule_thermostats(hass, config_entry, caplog, netatmo_a
             blocking=True,
         )
         await hass.async_block_till_done()
-        mock_switch_home_schedule.assert_called_once_with(
+        mock_switch_schedule.assert_called_once_with(
             schedule_id="591b54a2764ff4d50d8b5795"
         )
 

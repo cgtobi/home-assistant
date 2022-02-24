@@ -2,9 +2,10 @@
 from time import time
 from unittest.mock import AsyncMock, patch
 
+from pyatmo.const import ALL_SCOPES
 import pytest
 
-from .common import ALL_SCOPES, fake_get_image, fake_post_request
+from .common import fake_get_image, fake_post_request
 
 from tests.common import MockConfigEntry
 

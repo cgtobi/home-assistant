@@ -17,7 +17,7 @@ async def test_weather_sensor(hass, config_entry, netatmo_auth):
 
         await hass.async_block_till_done()
 
-    prefix = "sensor.netatmo_mystation_"
+    prefix = "sensor.netatmo_netatmoindoor_"
 
     assert hass.states.get(f"{prefix}temperature").state == "24.6"
     assert hass.states.get(f"{prefix}humidity").state == "36"
@@ -148,26 +148,16 @@ async def test_fix_angle(angle, expected):
 @pytest.mark.parametrize(
     "uid, name, expected",
     [
-        ("12:34:56:37:11:ca-reachable", "netatmo_mystation_reachable", "True"),
-        ("12:34:56:03:1b:e4-rf_status", "netatmo_mystation_yard_radio", "Full"),
+        ("12:34:56:37:11:ca-reachable", "netatmo_netatmoindoor_reachable", "True"),
+        ("12:34:56:03:1b:e4-rf_strength", "netatmo_mystation_yard_radio", "Full"),
         (
-            "12:34:56:05:25:6e-rf_status",
-            "netatmo_valley_road_rain_gauge_radio",
-            "Medium",
+            "12:34:56:05:51:20-rf_strength",
+            "netatmo_mystation_yard_rain_gauge_radio",
+            "High",
         ),
         (
-            "12:34:56:36:fc:de-rf_status_lvl",
-            "netatmo_mystation_netatmooutdoor_radio_level",
-            "65",
-        ),
-        (
-            "12:34:56:37:11:ca-wifi_status_lvl",
-            "netatmo_mystation_wifi_level",
-            "45",
-        ),
-        (
-            "12:34:56:37:11:ca-wifi_status",
-            "netatmo_mystation_wifi_status",
+            "12:34:56:37:11:ca-wifi_strength",
+            "netatmo_mystation_wifi_strength",
             "Full",
         ),
         (
@@ -182,26 +172,30 @@ async def test_fix_angle(angle, expected):
         ),
         ("12:34:56:05:51:20-sum_rain_1", "netatmo_mystation_yard_rain_last_hour", "0"),
         ("12:34:56:05:51:20-sum_rain_24", "netatmo_mystation_yard_rain_today", "0"),
-        ("12:34:56:03:1b:e4-windangle", "netatmo_mystation_garden_direction", "SW"),
+        ("12:34:56:03:1b:e4-wind_angle", "netatmo_mystation_garden_direction", "SW"),
         (
-            "12:34:56:03:1b:e4-windangle_value",
-            "netatmo_mystation_garden_angle",
+            "12:34:56:03:1b:e4-wind_angle_value",
+            "netatmo_netatmoindoor_garden_angle",
             "217",
         ),
-        ("12:34:56:03:1b:e4-gustangle", "mystation_garden_gust_direction", "S"),
         (
-            "12:34:56:03:1b:e4-gustangle",
-            "netatmo_mystation_garden_gust_direction",
+            "12:34:56:03:1b:e4-gust_angle",
+            "netatmo_netatmoindoor_garden_gust_direction",
             "S",
         ),
         (
-            "12:34:56:03:1b:e4-gustangle_value",
-            "netatmo_mystation_garden_gust_angle_value",
+            "12:34:56:03:1b:e4-gust_angle",
+            "netatmo_netatmoindoor_garden_gust_direction",
+            "S",
+        ),
+        (
+            "12:34:56:03:1b:e4-gust_angle_value",
+            "netatmo_netatmoindoor_garden_gust_angle_value",
             "206",
         ),
         (
-            "12:34:56:03:1b:e4-guststrength",
-            "netatmo_mystation_garden_gust_strength",
+            "12:34:56:03:1b:e4-gust_strength",
+            "netatmo_netatmoindoor_garden_gust_strength",
             "9",
         ),
         (

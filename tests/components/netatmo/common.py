@@ -11,19 +11,6 @@ from tests.test_util.aiohttp import AiohttpClientMockResponse
 
 CLIENT_ID = "1234"
 CLIENT_SECRET = "5678"
-ALL_SCOPES = [
-    "read_station",
-    "read_camera",
-    "access_camera",
-    "write_camera",
-    "read_presence",
-    "access_presence",
-    "write_presence",
-    "read_homecoach",
-    "read_smokedetector",
-    "read_thermostat",
-    "write_thermostat",
-]
 
 COMMON_RESPONSE = {
     "user_id": "91763b24c43d3e344f424e8d",
@@ -59,7 +46,7 @@ async def fake_post_request(*args, **kwargs):
         "setthermmode",
         "switchhomeschedule",
     ]:
-        payload = f'{{"{endpoint}": true}}'
+        payload = {f"{endpoint}": True, "status": "ok"}
 
     elif endpoint == "homestatus":
         home_id = kwargs.get("params", {}).get("home_id")

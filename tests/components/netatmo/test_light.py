@@ -53,7 +53,7 @@ async def test_light_setup_and_services(hass, config_entry, netatmo_auth):
     assert hass.states.get(light_entity).state == "on"
 
     # Test turning light off
-    with patch("pyatmo.camera.AsyncCameraData.async_set_state") as mock_set_state:
+    with patch("pyatmo.home.NetatmoHome.async_set_state") as mock_set_state:
         await hass.services.async_call(
             LIGHT_DOMAIN,
             SERVICE_TURN_OFF,
@@ -62,13 +62,11 @@ async def test_light_setup_and_services(hass, config_entry, netatmo_auth):
         )
         await hass.async_block_till_done()
         mock_set_state.assert_called_once_with(
-            home_id="91763b24c43d3e344f424e8b",
-            camera_id="12:34:56:00:a5:a4",
-            floodlight="auto",
+            {"modules": [{"id": "12:34:56:00:a5:a4", "floodlight": "auto"}]}
         )
 
     # Test turning light on
-    with patch("pyatmo.camera.AsyncCameraData.async_set_state") as mock_set_state:
+    with patch("pyatmo.home.NetatmoHome.async_set_state") as mock_set_state:
         await hass.services.async_call(
             LIGHT_DOMAIN,
             SERVICE_TURN_ON,
@@ -77,9 +75,7 @@ async def test_light_setup_and_services(hass, config_entry, netatmo_auth):
         )
         await hass.async_block_till_done()
         mock_set_state.assert_called_once_with(
-            home_id="91763b24c43d3e344f424e8b",
-            camera_id="12:34:56:00:a5:a4",
-            floodlight="on",
+            {"modules": [{"id": "12:34:56:00:a5:a4", "floodlight": "on"}]}
         )
 
 
@@ -121,7 +117,7 @@ async def test_setup_component_no_devices(hass, config_entry):
         )
         await hass.async_block_till_done()
 
-        assert fake_post_hits == 4
+        assert fake_post_hits == 2
 
         assert hass.config_entries.async_entries(DOMAIN)
         assert len(hass.states.async_all()) == 0
