@@ -93,7 +93,7 @@ async def test_setup_component_with_webhook(hass, config_entry, netatmo_auth):
     assert hass.states.get(camera_entity_indoor).state == "streaming"
     assert hass.states.get(camera_entity_outdoor).attributes["light_state"] == "auto"
 
-    with patch("pyatmo.home.NetatmoHome.async_set_state") as mock_set_state:
+    with patch("pyatmo.home.Home.async_set_state") as mock_set_state:
         await hass.services.async_call(
             "camera", "turn_off", service_data={"entity_id": "camera.netatmo_hall"}
         )
@@ -109,7 +109,7 @@ async def test_setup_component_with_webhook(hass, config_entry, netatmo_auth):
             }
         )
 
-    with patch("pyatmo.home.NetatmoHome.async_set_state") as mock_set_state:
+    with patch("pyatmo.home.Home.async_set_state") as mock_set_state:
         await hass.services.async_call(
             "camera", "turn_on", service_data={"entity_id": "camera.netatmo_hall"}
         )
@@ -200,9 +200,7 @@ async def test_service_set_person_away(hass, config_entry, netatmo_auth):
         "person": "Richard Doe",
     }
 
-    with patch(
-        "pyatmo.home.NetatmoHome.async_set_persons_away"
-    ) as mock_set_persons_away:
+    with patch("pyatmo.home.Home.async_set_persons_away") as mock_set_persons_away:
         await hass.services.async_call(
             "netatmo", SERVICE_SET_PERSON_AWAY, service_data=data
         )
@@ -215,9 +213,7 @@ async def test_service_set_person_away(hass, config_entry, netatmo_auth):
         "entity_id": "camera.netatmo_hall",
     }
 
-    with patch(
-        "pyatmo.home.NetatmoHome.async_set_persons_away"
-    ) as mock_set_persons_away:
+    with patch("pyatmo.home.Home.async_set_persons_away") as mock_set_persons_away:
         await hass.services.async_call(
             "netatmo", SERVICE_SET_PERSON_AWAY, service_data=data
         )
@@ -295,9 +291,7 @@ async def test_service_set_persons_home(hass, config_entry, netatmo_auth):
         "persons": "John Doe",
     }
 
-    with patch(
-        "pyatmo.home.NetatmoHome.async_set_persons_home"
-    ) as mock_set_persons_home:
+    with patch("pyatmo.home.Home.async_set_persons_home") as mock_set_persons_home:
         await hass.services.async_call(
             "netatmo", SERVICE_SET_PERSONS_HOME, service_data=data
         )
@@ -329,7 +323,7 @@ async def test_service_set_camera_light(hass, config_entry, netatmo_auth):
             },
         ],
     }
-    with patch("pyatmo.home.NetatmoHome.async_set_state") as mock_set_state:
+    with patch("pyatmo.home.Home.async_set_state") as mock_set_state:
         await hass.services.async_call(
             "netatmo", SERVICE_SET_CAMERA_LIGHT, service_data=data
         )

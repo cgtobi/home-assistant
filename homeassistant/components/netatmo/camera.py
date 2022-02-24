@@ -8,8 +8,8 @@ import aiohttp
 from pyatmo import ApiError as NetatmoApiError, modules as NaModules
 from pyatmo.modules.device_types import (
     DEVICE_DESCRIPTION_MAP,
-    NetatmoDeviceCategory,
-    NetatmoDeviceType,
+    DeviceCategory as NetatmoDeviceCategory,
+    DeviceType as NetatmoDeviceType,
 )
 import voluptuous as vol
 

@@ -1,7 +1,10 @@
 """Base class for Netatmo entities."""
 from __future__ import annotations
 
-from pyatmo.modules.device_types import DEVICE_DESCRIPTION_MAP, NetatmoDeviceType
+from pyatmo.modules.device_types import (
+    DEVICE_DESCRIPTION_MAP,
+    DeviceType as NetatmoDeviceType,
+)
 
 from homeassistant.const import ATTR_ATTRIBUTION
 from homeassistant.core import callback

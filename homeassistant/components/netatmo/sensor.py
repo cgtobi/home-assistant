@@ -6,7 +6,7 @@ import logging
 from typing import NamedTuple, cast
 
 import pyatmo
-from pyatmo.modules.device_types import NetatmoDeviceCategory
+from pyatmo.modules.device_types import DeviceCategory as NetatmoDeviceCategory
 
 from homeassistant.components.sensor import (
     SensorDeviceClass,
@@ -388,7 +388,7 @@ class NetatmoSensor(NetatmoBase, SensorEntity):
     def __init__(
         self,
         data_handler: NetatmoDataHandler,
-        module: pyatmo.NetatmoModule,
+        module: pyatmo.Module,
         description: NetatmoSensorEntityDescription,
     ) -> None:
         """Initialize the sensor."""
