@@ -5,7 +5,7 @@ import logging
 from typing import Any
 
 import pyatmo
-from pyatmo.modules.device_types import NetatmoDeviceCategory
+from pyatmo.modules.device_types import DeviceCategory as NetatmoDeviceCategory
 import voluptuous as vol
 
 from homeassistant.components.climate import ClimateEntity
@@ -163,9 +163,7 @@ class NetatmoThermostat(NetatmoBase, ClimateEntity):
     _attr_target_temperature_step = PRECISION_HALVES
     _attr_temperature_unit = TEMP_CELSIUS
 
-    def __init__(
-        self, data_handler: NetatmoDataHandler, room: pyatmo.NetatmoRoom
-    ) -> None:
+    def __init__(self, data_handler: NetatmoDataHandler, room: pyatmo.Room) -> None:
         """Initialize the sensor."""
         ClimateEntity.__init__(self)
         super().__init__(data_handler)
@@ -399,7 +397,6 @@ class NetatmoThermostat(NetatmoBase, ClimateEntity):
     @callback
     def async_update_callback(self) -> None:
         """Update the entity's state."""
-        print("Updating climate data...")
         if not self._room.reachable:
             if self.available:
                 self._connected = False

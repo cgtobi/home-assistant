@@ -5,7 +5,7 @@ import logging
 from typing import Any
 
 import pyatmo
-from pyatmo.modules.device_types import NetatmoDeviceType
+from pyatmo.modules.device_types import DeviceType as NetatmoDeviceType
 
 from homeassistant.components.light import ColorMode, LightEntity
 from homeassistant.config_entries import ConfigEntry

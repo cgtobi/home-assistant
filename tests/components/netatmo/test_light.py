@@ -53,7 +53,7 @@ async def test_light_setup_and_services(hass, config_entry, netatmo_auth):
     assert hass.states.get(light_entity).state == "on"
 
     # Test turning light off
-    with patch("pyatmo.home.NetatmoHome.async_set_state") as mock_set_state:
+    with patch("pyatmo.home.Home.async_set_state") as mock_set_state:
         await hass.services.async_call(
             LIGHT_DOMAIN,
             SERVICE_TURN_OFF,
@@ -66,7 +66,7 @@ async def test_light_setup_and_services(hass, config_entry, netatmo_auth):
         )
 
     # Test turning light on
-    with patch("pyatmo.home.NetatmoHome.async_set_state") as mock_set_state:
+    with patch("pyatmo.home.Home.async_set_state") as mock_set_state:
         await hass.services.async_call(
             LIGHT_DOMAIN,
             SERVICE_TURN_ON,
