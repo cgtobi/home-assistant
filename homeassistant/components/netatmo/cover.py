@@ -84,7 +84,7 @@ class NetatmoCover(NetatmoBase, CoverEntity):
         self._closed: bool | None = None
         # self._is_opening: bool | None = None
         # self._is_closing: bool | None = None
-        # self._attr_is_closed= None
+        self._attr_is_closed = None
 
         self._signal_name = f"{HOME}-{self._home_id}"
         self._publishers.extend(
