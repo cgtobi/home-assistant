@@ -14,6 +14,7 @@ PLATFORMS = [
     Platform.SELECT,
     Platform.SENSOR,
     Platform.COVER,
+    Platform.SWITCH,
 ]
 
 CONF_URL_SECURITY = "https://home.netatmo.com/security"

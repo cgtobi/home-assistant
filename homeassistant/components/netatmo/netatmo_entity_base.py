@@ -61,7 +61,6 @@ class NetatmoBase(Entity):
                 )
 
             else:
-                print("___REGISTER___", self.name)
                 await self.data_handler.subscribe(
                     publisher["name"], signal_name, self.async_update_callback
                 )

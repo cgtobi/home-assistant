@@ -129,6 +129,7 @@ class NetatmoCamera(NetatmoBase, Camera):
         self._alim_status: int | None = None
         self._is_local: bool | None = None
         self._light_state = None
+        self._attr_brand = MANUFACTURER
 
         self._signal_name = f"{HOME}-{self._home_id}"
         self._publishers.extend(
@@ -140,6 +141,8 @@ class NetatmoCamera(NetatmoBase, Camera):
                 },
             ]
         )
+        # if self._model == "NDB":
+        #     print(self._attr_unique_id, self._device_name, self._camera.alim_status)
 
     async def async_added_to_hass(self) -> None:
         """Entity created."""
@@ -188,6 +191,7 @@ class NetatmoCamera(NetatmoBase, Camera):
     ) -> bytes | None:
         """Return a still image response from the camera."""
         try:
+            # print(await self._camera.async_get_live_snapshot())
             return cast(bytes, await self._camera.async_get_live_snapshot())
         except (
             aiohttp.ClientPayloadError,
@@ -200,29 +204,9 @@ class NetatmoCamera(NetatmoBase, Camera):
         return None
 
     @property
-    def available(self) -> bool:
-        """Return True if entity is available."""
-        return bool(self._monitoring)
-
-    @property
     def supported_features(self) -> int:
         """Return supported features."""
         return SUPPORT_STREAM
-
-    @property
-    def brand(self) -> str:
-        """Return the camera brand."""
-        return MANUFACTURER
-
-    @property
-    def motion_detection_enabled(self) -> bool:
-        """Return the camera motion detection status."""
-        return bool(self._monitoring)
-
-    @property
-    def is_on(self) -> bool:
-        """Return true if on."""
-        return self.is_streaming
 
     async def async_turn_off(self) -> None:
         """Turn off camera."""
@@ -257,6 +241,9 @@ class NetatmoCamera(NetatmoBase, Camera):
         self._alim_status = self._camera.alim_status
         self._is_local = self._camera.is_local
         self._attr_is_streaming = bool(self._monitoring)
+        self._attr_is_on = self._alim_status is not None
+        self._attr_available = self._alim_status is not None
+        self._attr_motion_detection_enabled = bool(self._monitoring)
 
         # if self._model == "NACamera":  # Smart Indoor Camera
         #     self.hass.data[DOMAIN][DATA_EVENTS][self._id] = self.process_events(
