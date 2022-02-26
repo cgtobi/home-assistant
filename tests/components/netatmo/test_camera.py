@@ -44,7 +44,7 @@ async def test_setup_component_with_webhook(hass, config_entry, netatmo_auth):
     }
     await simulate_webhook(hass, webhook_id, response)
 
-    assert hass.states.get(camera_entity_indoor).state == "unavailable"
+    assert hass.states.get(camera_entity_indoor).state == "idle"
 
     response = {
         "event_type": "on",

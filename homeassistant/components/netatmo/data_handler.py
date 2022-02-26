@@ -60,7 +60,7 @@ class NetatmoDevice:
     """Netatmo device class."""
 
     data_handler: NetatmoDataHandler
-    device: pyatmo.NetatmoModule
+    device: pyatmo.Module
     parent_id: str
     signal_name: str
 
@@ -93,7 +93,6 @@ class NetatmoDataHandler:
 
     async def async_setup(self) -> None:
         """Set up the Netatmo data handler."""
-        print("""Set up the Netatmo data handler.""")
         async_track_time_interval(
             self.hass, self.async_update, timedelta(seconds=SCAN_INTERVAL)
         )
@@ -130,7 +129,6 @@ class NetatmoDataHandler:
                 self.publisher[data_class_name].next_scan = time() + data_class.interval
 
                 await self.async_fetch_data(data_class_name)
-                print("Update device.", data_class_name)
 
         self._queue.rotate(BATCH_SIZE)
 
@@ -171,11 +169,6 @@ class NetatmoDataHandler:
             _LOGGER.debug(err)
             return
 
-        print(
-            signal_name,
-            "data fetched",
-            self.publisher[signal_name],
-        )
         for update_callback in self.publisher[signal_name].subscriptions:
             if update_callback:
                 update_callback()
@@ -188,7 +181,6 @@ class NetatmoDataHandler:
         **kwargs: Any,
     ) -> None:
         """Subscribe to publisher."""
-        print("""Subscribe to publisher.""", publisher, signal_name)
         if signal_name in self.publisher:
             if update_callback not in self.publisher[signal_name].subscriptions:
                 self.publisher[signal_name].subscriptions.append(update_callback)
@@ -207,7 +199,6 @@ class NetatmoDataHandler:
         )
 
         try:
-            print(f"async_fetch_data({signal_name=})")
             await self.async_fetch_data(signal_name)
         except KeyError:
             self.publisher.pop(signal_name)
