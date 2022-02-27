@@ -107,9 +107,7 @@ class NetatmoCamera(NetatmoBase, Camera):
     _attr_supported_features = CameraEntityFeature.STREAM
 
     def __init__(
-        self,
-        data_handler: NetatmoDataHandler,
-        camera: NaModules.NOC | NaModules.NACamera | NaModules.NDB,
+        self, data_handler: NetatmoDataHandler, camera: NaModules.Camera
     ) -> None:
         """Set up for access to the Netatmo camera images."""
         Camera.__init__(self)
