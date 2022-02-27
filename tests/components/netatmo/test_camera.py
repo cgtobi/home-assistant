@@ -367,7 +367,7 @@ async def test_camera_reconnect_webhook(hass, config_entry):
         await simulate_webhook(hass, webhook_id, response)
         await hass.async_block_till_done()
 
-        assert fake_post_hits == 4
+        assert fake_post_hits == 6
 
         calls = fake_post_hits
 
@@ -494,4 +494,4 @@ async def test_camera_image_raises_exception(hass, config_entry, requests_mock):
         await camera.async_get_image(hass, camera_entity_indoor)
 
     assert excinfo.value.args == ("Unable to get image",)
-    assert fake_post_hits == 5
+    assert fake_post_hits == 7

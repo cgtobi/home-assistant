@@ -79,7 +79,7 @@ async def test_setup_component(hass, config_entry):
         await hass.config_entries.async_remove(config_entry.entry_id)
 
     await hass.async_block_till_done()
-    assert len(hass.states.async_all()) == 0
+    assert len(hass.states.async_all()) == 2
     assert not hass.config_entries.async_entries(DOMAIN)
 
 
@@ -145,7 +145,7 @@ async def test_setup_component_with_webhook(hass, config_entry, netatmo_auth):
         await hass.config_entries.async_remove(config_entry.entry_id)
 
     await hass.async_block_till_done()
-    assert len(hass.states.async_all()) == 0
+    assert len(hass.states.async_all()) == 2
     assert len(hass.config_entries.async_entries(DOMAIN)) == 0
 
 
