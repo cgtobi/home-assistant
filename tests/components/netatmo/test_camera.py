@@ -344,7 +344,7 @@ async def test_camera_reconnect_webhook(hass, config_entry):
     with patch(
         "homeassistant.components.netatmo.api.AsyncConfigEntryNetatmoAuth"
     ) as mock_auth, patch(
-        "homeassistant.components.netatmo.PLATFORMS", ["camera"]
+        "homeassistant.components.netatmo.data_handler.PLATFORMS", ["camera"]
     ), patch(
         "homeassistant.helpers.config_entry_oauth2_flow.async_get_config_entry_implementation",
     ), patch(
@@ -467,14 +467,14 @@ async def test_camera_image_raises_exception(hass, config_entry, requests_mock):
         endpoint = kwargs["url"].split("/")[-1]
 
         if "snapshot_720.jpg" in endpoint:
-            raise pyatmo.exceptions.ApiError()
+            raise pyatmo.ApiError()
 
         return await fake_post_request(*args, **kwargs)
 
     with patch(
         "homeassistant.components.netatmo.api.AsyncConfigEntryNetatmoAuth"
     ) as mock_auth, patch(
-        "homeassistant.components.netatmo.PLATFORMS", ["camera"]
+        "homeassistant.components.netatmo.data_handler.PLATFORMS", ["camera"]
     ), patch(
         "homeassistant.helpers.config_entry_oauth2_flow.async_get_config_entry_implementation",
     ), patch(

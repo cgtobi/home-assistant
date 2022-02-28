@@ -100,7 +100,7 @@ async def test_setup_component_with_config(hass, config_entry):
     ) as mock_webhook, patch(
         "homeassistant.components.netatmo.api.AsyncConfigEntryNetatmoAuth",
     ) as mock_auth, patch(
-        "homeassistant.components.netatmo.PLATFORMS", ["sensor"]
+        "homeassistant.components.netatmo.data_handler.PLATFORMS", ["sensor"]
     ):
         mock_auth.return_value.async_post_request.side_effect = fake_post
         mock_auth.return_value.async_addwebhook.side_effect = AsyncMock()
@@ -112,7 +112,7 @@ async def test_setup_component_with_config(hass, config_entry):
 
         await hass.async_block_till_done()
 
-        assert fake_post_hits == 5
+        assert fake_post_hits == 7
         mock_impl.assert_called_once()
         mock_webhook.assert_called_once()
 
@@ -298,9 +298,7 @@ async def test_setup_component_api_error(hass, config_entry):
     ) as mock_impl, patch(
         "homeassistant.components.netatmo.webhook_generate_url"
     ):
-        mock_auth.return_value.async_post_request.side_effect = (
-            pyatmo.exceptions.ApiError()
-        )
+        mock_auth.return_value.async_post_request.side_effect = pyatmo.ApiError()
 
         mock_auth.return_value.async_addwebhook.side_effect = AsyncMock()
         mock_auth.return_value.async_dropwebhook.side_effect = AsyncMock()
@@ -350,7 +348,7 @@ async def test_setup_component_with_delay(hass, config_entry):
     ) as mock_webhook, patch(
         "pyatmo.AbstractAsyncAuth.async_post_request", side_effect=fake_post_request
     ) as mock_post_request, patch(
-        "homeassistant.components.netatmo.PLATFORMS", ["light"]
+        "homeassistant.components.netatmo.data_handler.PLATFORMS", ["light"]
     ):
 
         assert await async_setup_component(
