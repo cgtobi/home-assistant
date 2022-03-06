@@ -22,6 +22,7 @@ from homeassistant.const import (
     DEGREE,
     LENGTH_MILLIMETERS,
     PERCENTAGE,
+    POWER_WATT,
     PRESSURE_MBAR,
     SOUND_PRESSURE_DB,
     SPEED_KILOMETERS_PER_HOUR,
@@ -225,6 +226,14 @@ SENSOR_TYPES: tuple[NetatmoSensorEntityDescription, ...] = (
         name="Health",
         entity_registry_enabled_default=True,
         icon="mdi:cloud",
+    ),
+    NetatmoSensorEntityDescription(
+        key="power",
+        name="Power",
+        entity_registry_enabled_default=True,
+        native_unit_of_measurement=POWER_WATT,
+        state_class=SensorStateClass.TOTAL,
+        device_class=SensorDeviceClass.POWER,
     ),
 )
 SENSOR_TYPES_KEYS = [desc.key for desc in SENSOR_TYPES]
