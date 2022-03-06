@@ -39,6 +39,7 @@ from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import (
+    CONF_URL_ENERGY,
     CONF_URL_WEATHER,
     CONF_WEATHER_AREAS,
     DATA_HANDLER,
@@ -469,6 +470,7 @@ class NetatmoClimateBatterySensor(NetatmoBase, SensorEntity):
         self._attr_name = f"{self._module.name} {self.entity_description.name}"
         self._room_id = self._module.room_id
         self._model = getattr(self._module.device_type, "value")
+        self._netatmo_type = CONF_URL_ENERGY
 
         self._attr_unique_id = (
             f"{self._id}-{self._module.entity_id}-{self.entity_description.key}"

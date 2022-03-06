@@ -27,6 +27,7 @@ from .const import (
     DOMAIN,
     MANUFACTURER,
     NETATMO_CREATE_BATTERY,
+    NETATMO_CREATE_CLIMATE,
     NETATMO_CREATE_SELECT,
     PLATFORMS,
     WEBHOOK_ACTIVATION,
@@ -78,10 +79,20 @@ class NetatmoDevice:
 
 @dataclass
 class NetatmoHome:
-    """Netatmo device class."""
+    """Netatmo home class."""
 
     data_handler: NetatmoDataHandler
     home: pyatmo.Home
+    parent_id: str
+    signal_name: str
+
+
+@dataclass
+class NetatmoRoom:
+    """Netatmo room class."""
+
+    data_handler: NetatmoDataHandler
+    room: pyatmo.Room
     parent_id: str
     signal_name: str
 
@@ -273,6 +284,16 @@ class NetatmoDataHandler:
         for room in home.rooms.values():
             if NetatmoDeviceCategory.climate in room.features:
                 print("dispatching room", room.name)
+                async_dispatcher_send(
+                    self.hass,
+                    NETATMO_CREATE_CLIMATE,
+                    NetatmoRoom(
+                        self,
+                        room,
+                        home.entity_id,
+                        signal_name,
+                    ),
+                )
                 for module in room.modules.values():
                     if module.device_category is NetatmoDeviceCategory.climate:
                         print("dispatching module", module.name)
