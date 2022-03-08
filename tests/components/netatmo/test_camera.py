@@ -431,7 +431,8 @@ async def test_setup_component_no_devices(hass, config_entry):
         """Fake error during requesting backend data."""
         nonlocal fake_post_hits
         fake_post_hits += 1
-        return "{}"
+        # return {}
+        return await fake_post_request(*args, **kwargs)
 
     with patch(
         "homeassistant.components.netatmo.api.AsyncConfigEntryNetatmoAuth"
@@ -449,7 +450,7 @@ async def test_setup_component_no_devices(hass, config_entry):
         await hass.config_entries.async_setup(config_entry.entry_id)
         await hass.async_block_till_done()
 
-        assert fake_post_hits == 1
+        assert fake_post_hits == 9
 
 
 async def test_camera_image_raises_exception(hass, config_entry, requests_mock):

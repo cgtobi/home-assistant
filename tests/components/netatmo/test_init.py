@@ -1,11 +1,9 @@
 """The tests for Netatmo component."""
-import asyncio
 from datetime import timedelta
 from time import time
 from unittest.mock import AsyncMock, patch
 
 import aiohttp
-import pyatmo
 from pyatmo.const import ALL_SCOPES
 
 from homeassistant import config_entries
@@ -79,7 +77,7 @@ async def test_setup_component(hass, config_entry):
         await hass.config_entries.async_remove(config_entry.entry_id)
 
     await hass.async_block_till_done()
-    assert len(hass.states.async_all()) == 2
+    assert len(hass.states.async_all()) == 0
     assert not hass.config_entries.async_entries(DOMAIN)
 
 
@@ -145,7 +143,7 @@ async def test_setup_component_with_webhook(hass, config_entry, netatmo_auth):
         await hass.config_entries.async_remove(config_entry.entry_id)
 
     await hass.async_block_till_done()
-    assert len(hass.states.async_all()) == 2
+    assert len(hass.states.async_all()) == 0
     assert len(hass.config_entries.async_entries(DOMAIN)) == 0
 
 
@@ -287,50 +285,6 @@ async def test_setup_with_cloudhook(hass):
 
         await hass.async_block_till_done()
         assert not hass.config_entries.async_entries(DOMAIN)
-
-
-async def test_setup_component_api_error(hass, config_entry):
-    """Test error on setup of the netatmo component."""
-    with patch(
-        "homeassistant.components.netatmo.api.AsyncConfigEntryNetatmoAuth",
-    ) as mock_auth, patch(
-        "homeassistant.helpers.config_entry_oauth2_flow.async_get_config_entry_implementation",
-    ) as mock_impl, patch(
-        "homeassistant.components.netatmo.webhook_generate_url"
-    ):
-        mock_auth.return_value.async_post_request.side_effect = pyatmo.ApiError()
-
-        mock_auth.return_value.async_addwebhook.side_effect = AsyncMock()
-        mock_auth.return_value.async_dropwebhook.side_effect = AsyncMock()
-        assert await async_setup_component(hass, "netatmo", {})
-
-    await hass.async_block_till_done()
-
-    mock_auth.assert_called_once()
-    mock_impl.assert_called_once()
-
-
-async def test_setup_component_api_timeout(hass, config_entry):
-    """Test timeout on setup of the netatmo component."""
-    with patch(
-        "homeassistant.components.netatmo.api.AsyncConfigEntryNetatmoAuth",
-    ) as mock_auth, patch(
-        "homeassistant.helpers.config_entry_oauth2_flow.async_get_config_entry_implementation",
-    ) as mock_impl, patch(
-        "homeassistant.components.netatmo.webhook_generate_url"
-    ):
-        mock_auth.return_value.async_post_request.side_effect = (
-            asyncio.exceptions.TimeoutError()
-        )
-
-        mock_auth.return_value.async_addwebhook.side_effect = AsyncMock()
-        mock_auth.return_value.async_dropwebhook.side_effect = AsyncMock()
-        assert await async_setup_component(hass, "netatmo", {})
-
-    await hass.async_block_till_done()
-
-    mock_auth.assert_called_once()
-    mock_impl.assert_called_once()
 
 
 async def test_setup_component_with_delay(hass, config_entry):

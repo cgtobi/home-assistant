@@ -119,7 +119,7 @@ class NetatmoCamera(NetatmoBase, Camera):
         self._device_name = self._camera.name
         self._attr_name = f"{MANUFACTURER} {self._device_name}"
         self._model = self._camera.device_type
-        self._netatmo_type = CONF_URL_SECURITY
+        self._config_url = CONF_URL_SECURITY
         self._attr_unique_id = f"{self._id}-{self._model}"
         self._quality = DEFAULT_QUALITY
         self._vpnurl: str | None = None

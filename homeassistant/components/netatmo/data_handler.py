@@ -255,6 +255,13 @@ class NetatmoDataHandler:
         self, signal_name: str, update_callback: CALLBACK_TYPE | None
     ) -> None:
         """Unsubscribe from publisher."""
+        if signal_name not in self.publisher:
+            print(signal_name, "not found")
+        assert signal_name in self.publisher
+        if update_callback in self.publisher[signal_name].subscriptions:
+            print(update_callback, "not found")
+            return
+        assert update_callback in self.publisher[signal_name].subscriptions
         self.publisher[signal_name].subscriptions.remove(update_callback)
 
         if not self.publisher[signal_name].subscriptions:

@@ -78,7 +78,7 @@ class NetatmoLight(NetatmoBase, LightEntity):
         self._device_name = self._camera.name
         self._attr_name = f"{MANUFACTURER} {self._device_name}"
         self._model = self._camera.device_type
-        self._netatmo_type = CONF_URL_SECURITY
+        self._config_url = CONF_URL_SECURITY
         self._is_on = False
         self._attr_unique_id = f"{self._id}-light"
 

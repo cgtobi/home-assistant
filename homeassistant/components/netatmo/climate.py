@@ -4,6 +4,8 @@ from __future__ import annotations
 import logging
 from typing import Any
 
+import voluptuous as vol
+
 from homeassistant.components.climate import ClimateEntity
 from homeassistant.components.climate.const import (
     DEFAULT_MIN_TEMP,
@@ -25,6 +27,7 @@ from homeassistant.const import (
     TEMP_CELSIUS,
 )
 from homeassistant.core import HomeAssistant, callback
+from homeassistant.helpers import config_validation as cv, entity_platform
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -41,6 +44,7 @@ from .const import (
     EVENT_TYPE_SET_POINT,
     EVENT_TYPE_THERM_MODE,
     NETATMO_CREATE_CLIMATE,
+    SERVICE_SET_SCHEDULE,
 )
 from .data_handler import HOME, SIGNAL_NAME, NetatmoRoom
 from .netatmo_entity_base import NetatmoBase
@@ -114,6 +118,13 @@ async def async_setup_entry(
         async_dispatcher_connect(hass, NETATMO_CREATE_CLIMATE, _create_entity)
     )
 
+    platform = entity_platform.async_get_current_platform()
+    platform.async_register_entity_service(
+        SERVICE_SET_SCHEDULE,
+        {vol.Required(ATTR_SCHEDULE_NAME): cv.string},
+        "_async_service_set_schedule",
+    )
+
 
 class NetatmoThermostat(NetatmoBase, ClimateEntity):
     """Representation a Netatmo thermostat."""
@@ -149,7 +160,7 @@ class NetatmoThermostat(NetatmoBase, ClimateEntity):
 
         self._model: str = f"{self._room.climate_type}"
 
-        self._netatmo_type = CONF_URL_ENERGY
+        self._config_url = CONF_URL_ENERGY
 
         self._attr_name = self._room.name
         self._away: bool | None = None
