@@ -105,25 +105,6 @@ async def test_process_health(health, expected):
 
 @pytest.mark.parametrize(
     "angle, expected",
-    [
-        (0, "N"),
-        (40, "NE"),
-        (70, "E"),
-        (130, "SE"),
-        (160, "S"),
-        (220, "SW"),
-        (250, "W"),
-        (310, "NW"),
-        (340, "N"),
-    ],
-)
-async def test_process_angle(angle, expected):
-    """Test wind direction translation."""
-    assert sensor.process_angle(angle) == expected
-
-
-@pytest.mark.parametrize(
-    "angle, expected",
     [(-1, 359), (-40, 320)],
 )
 async def test_fix_angle(angle, expected):
@@ -158,25 +139,24 @@ async def test_fix_angle(angle, expected):
         ),
         ("12:34:56:05:51:20-sum_rain_1", "netatmo_mystation_yard_rain_last_hour", "0"),
         ("12:34:56:05:51:20-sum_rain_24", "netatmo_mystation_yard_rain_today", "0"),
-        ("12:34:56:03:1b:e4-wind_angle", "netatmo_mystation_garden_direction", "SW"),
         (
-            "12:34:56:03:1b:e4-wind_angle_value",
+            "12:34:56:03:1b:e4-wind_direction",
+            "netatmo_mystation_garden_direction",
+            "SW",
+        ),
+        (
+            "12:34:56:03:1b:e4-wind_angle",
             "netatmo_netatmoindoor_garden_angle",
             "217",
         ),
         (
-            "12:34:56:03:1b:e4-gust_angle",
+            "12:34:56:03:1b:e4-gust_direction",
             "netatmo_netatmoindoor_garden_gust_direction",
             "S",
         ),
         (
             "12:34:56:03:1b:e4-gust_angle",
-            "netatmo_netatmoindoor_garden_gust_direction",
-            "S",
-        ),
-        (
-            "12:34:56:03:1b:e4-gust_angle_value",
-            "netatmo_netatmoindoor_garden_gust_angle_value",
+            "netatmo_netatmoindoor_garden_gust_angle",
             "206",
         ),
         (
