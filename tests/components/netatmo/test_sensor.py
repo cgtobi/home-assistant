@@ -104,15 +104,6 @@ async def test_process_health(health, expected):
 
 
 @pytest.mark.parametrize(
-    "angle, expected",
-    [(-1, 359), (-40, 320)],
-)
-async def test_fix_angle(angle, expected):
-    """Test wind angle fix."""
-    assert sensor.fix_angle(angle) == expected
-
-
-@pytest.mark.parametrize(
     "uid, name, expected",
     [
         ("12:34:56:37:11:ca-reachable", "netatmo_netatmoindoor_reachable", "True"),
