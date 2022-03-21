@@ -31,7 +31,17 @@
             "id": "2940411577",
             "name": "Cocina",
             "type": "kitchen",
-            "module_ids": ["12:34:56:03:a0:ac"]
+            "module_ids": [
+              "12:34:56:03:a0:ac"
+            ]
+          },
+          {
+            "id": "2940411588",
+            "name": "Child",
+            "type": "custom",
+            "module_ids": [
+              "12:34:56:26:cc:01"
+            ]
           }
         ],
         "modules": [
@@ -194,6 +204,12 @@
             "type": "NHC",
             "name": "Indoor",
             "setup_date": 1571342643
+          },
+          {
+            "id": "12:34:56:26:cc:01",
+            "type": "BNS",
+            "name": "Child",
+            "setup_date": 1571634243
           }
         ],
         "schedules": [

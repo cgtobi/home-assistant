@@ -772,3 +772,20 @@ async def test_webhook_set_point(hass, config_entry, netatmo_auth):
     await simulate_webhook(hass, webhook_id, response)
 
     assert hass.states.get(climate_entity_entrada).state == "heat"
+
+
+async def test_smarther_thermostat(hass, config_entry, netatmo_auth):
+    """Test support for smarther thermostat."""
+    with selected_platforms(["climate", "sensor"]):
+        await hass.config_entries.async_setup(config_entry.entry_id)
+
+        await hass.async_block_till_done()
+
+    climate_entity_child = "climate.child"
+
+    assert hass.states.get(climate_entity_child).state == "auto"
+    assert hass.states.get(climate_entity_child).attributes["temperature"] == 21.5
+    assert (
+        hass.states.get(climate_entity_child).attributes["current_temperature"] == 19.9
+    )
+    assert hass.states.get("sensor.child_humidity").state == "68"
