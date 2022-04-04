@@ -16,7 +16,7 @@ async def test_select_schedule_thermostats(hass, config_entry, caplog, netatmo_a
         await hass.async_block_till_done()
 
     webhook_id = config_entry.data[CONF_WEBHOOK_ID]
-    select_entity = "select.netatmo_myhome"
+    select_entity = "select.myhome"
 
     assert hass.states.get(select_entity).state == "Default"
 
