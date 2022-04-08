@@ -197,4 +197,4 @@ async def test_climate_battery_sensor(hass, config_entry, netatmo_auth):
 
     prefix = "sensor.livingroom_"
 
-    assert hass.states.get(f"{prefix}battery_percent").state == "75"
+    assert hass.states.get(f"{prefix}battery_percent").state == "79"

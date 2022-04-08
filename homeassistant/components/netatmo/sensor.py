@@ -411,6 +411,18 @@ class NetatmoWeatherSensor(NetatmoBase, SensorEntity):
         self._config_url = CONF_URL_WEATHER
         self._attr_unique_id = f"{self._id}-{description.key}"
 
+        if hasattr(self._module, "place"):
+            place = cast(
+                pyatmo.modules.base_class.Place, getattr(self._module, "place")
+            )
+            if hasattr(place, "location") and place.location is not None:
+                self._attr_extra_state_attributes.update(
+                    {
+                        ATTR_LATITUDE: place.location.latitude,
+                        ATTR_LONGITUDE: place.location.longitude,
+                    }
+                )
+
     async def async_added_to_hass(self) -> None:
         """Entity created."""
         await super().async_added_to_hass()
