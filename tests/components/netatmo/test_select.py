@@ -1,4 +1,4 @@
-"""The tests for the Netatmo climate platform."""
+"""The tests for the Netatmo select platform."""
 from unittest.mock import patch
 
 from homeassistant.components.select import DOMAIN as SELECT_DOMAIN
