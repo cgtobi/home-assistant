@@ -12,12 +12,10 @@ from homeassistant.components.climate.const import (
     DEFAULT_MIN_TEMP,
     PRESET_AWAY,
     PRESET_BOOST,
+    PRESET_HOME,
     ClimateEntityFeature,
     HVACAction,
     HVACMode,
-    PRESET_HOME,
-    SUPPORT_PRESET_MODE,
-    SUPPORT_TARGET_TEMPERATURE,
 )
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
@@ -263,8 +261,8 @@ class NetatmoThermostat(NetatmoBase, ClimateEntity):
                 data["event_type"] == EVENT_TYPE_CANCEL_SET_POINT
                 and self._room.entity_id == room["id"]
             ):
-                if self.hvac_mode == HVAC_MODE_OFF:
-                    self._attr_hvac_mode = HVAC_MODE_AUTO
+                if self.hvac_mode == HVACMode.OFF:
+                    self._attr_hvac_mode = HVACMode.AUTO
                     self._attr_preset_mode = PRESET_MAP_NETATMO[PRESET_SCHEDULE]
 
                 self.async_update_callback()
@@ -340,7 +338,7 @@ class NetatmoThermostat(NetatmoBase, ClimateEntity):
                 STATE_NETATMO_MANUAL,
                 DEFAULT_MIN_TEMP,
             )
-        elif elif self.hvac_mode != HVACMode.OFF:
+        elif self.hvac_mode != HVACMode.OFF:
             await self._room.async_therm_set(STATE_NETATMO_OFF)
         self.async_write_ha_state()
 
