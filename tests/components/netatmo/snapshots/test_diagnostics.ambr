@@ -552,6 +552,7 @@
                 'zones': '**REDACTED**',
               }),
             ]),
+            'temperature_control_mode': 'heating',
             'therm_mode': 'schedule',
             'therm_setpoint_default_duration': 120,
             'timezone': 'Europe/Berlin',

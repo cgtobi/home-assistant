@@ -8,6 +8,7 @@
         "coordinates": [52.516263, 13.377726],
         "country": "DE",
         "timezone": "Europe/Berlin",
+        "temperature_control_mode": "heating",
         "rooms": [
           {
             "id": "2746182631",

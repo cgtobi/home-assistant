@@ -115,6 +115,11 @@ class NetatmoRoom:
     parent_id: str
     signal_name: str
 
+    @property
+    def has_cooling(self) -> bool:
+        """Return if room has cooling."""
+        return bool(self.room.has_feature("cooling_setpoint_mode"))
+
 
 @dataclass
 class NetatmoPublisher:
@@ -430,9 +435,7 @@ class NetatmoDataHandler:
         self, home: pyatmo.Home, signal_home: str
     ) -> None:
         """Set up climate schedule per home."""
-        if NetatmoDeviceCategory.climate in [
-            next(iter(x)) for x in [room.features for room in home.rooms.values()] if x
-        ]:
+        if home.temperature_control_mode:
             self.hass.data[DOMAIN][DATA_SCHEDULES][home.entity_id] = self.account.homes[
                 home.entity_id
             ].schedules

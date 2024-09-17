@@ -107,6 +107,7 @@ SERVICE_SET_TEMPERATURE_WITH_TIME_PERIOD = "set_temperature_with_time_period"
 
 # Climate events
 EVENT_TYPE_CANCEL_SET_POINT = "cancel_set_point"
+EVENT_TYPE_COOLING_MODE = "cooling_mode"
 EVENT_TYPE_SCHEDULE = "schedule"
 EVENT_TYPE_SET_POINT = "set_point"
 EVENT_TYPE_THERM_MODE = "therm_mode"
@@ -148,6 +149,7 @@ CLIMATE_TRIGGERS = [
     EVENT_TYPE_CANCEL_SET_POINT,
     EVENT_TYPE_SET_POINT,
     EVENT_TYPE_THERM_MODE,
+    EVENT_TYPE_COOLING_MODE,
 ]
 EVENT_ID_MAP = {
     EVENT_TYPE_ALARM_STARTED: "device_id",
@@ -165,6 +167,7 @@ EVENT_ID_MAP = {
     EVENT_TYPE_LIGHT_MODE: "device_id",
     EVENT_TYPE_SET_POINT: "room_id",
     EVENT_TYPE_THERM_MODE: "home_id",
+    EVENT_TYPE_COOLING_MODE: "home_id",
 }
 
 MODE_LIGHT_AUTO = "auto"

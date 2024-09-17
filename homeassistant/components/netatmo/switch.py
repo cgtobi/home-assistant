@@ -80,3 +80,56 @@ class NetatmoSwitch(NetatmoModuleEntity, SwitchEntity):
         await self.device.async_off()
         self._attr_is_on = False
         self.async_write_ha_state()
+
+
+# class NetatmoClimateModeSwitch(NetatmoBaseEntity, SwitchEntity):
+#     """Representation of a Netatmo switch device."""
+
+#     _attr_name = None
+
+#     def __init__(self, netatmo_home: NetatmoHome) -> None:
+#         """Initialize the switch entity."""
+#         super().__init__(netatmo_home.data_handler)
+
+#         self.home = netatmo_home.home
+
+#         self._publishers.extend(
+#             [
+#                 {
+#                     "name": HOME,
+#                     "home_id": self.home.entity_id,
+#                     SIGNAL_NAME: netatmo_home.signal_name,
+#                 },
+#             ]
+#         )
+#         self._attr_device_info = DeviceInfo(
+#             identifiers={(DOMAIN, self.home.entity_id)},
+#             name=self.home.name,
+#             manufacturer=MANUFACTURER,
+#             model="Climate",
+#             configuration_url=CONF_URL_ENERGY,
+#         )
+
+#         self._attr_unique_id = f"{self.home.entity_id}-schedule-select"
+
+
+#     async def async_added_to_hass(self) -> None:
+#         """Entity created."""
+#         await super().async_added_to_hass()
+
+#         self.async_on_remove(
+#             async_dispatcher_connect(
+#                 self.hass,
+#                 f"signal-{DOMAIN}-webhook-{EVENT_TYPE_SCHEDULE}",
+#                 self.handle_event,
+#             )
+#         )
+
+#     @callback
+#     def async_update_callback(self) -> None:
+#         """Update the entity's state."""
+#         self._attr_current_option = self.get_selected_schedule()
+#         self._attr_options = self.get_available_schedules()
+#         self.hass.data[DOMAIN][DATA_SCHEDULES][self.home.entity_id] = (
+#             self.home.schedules
+#         )
