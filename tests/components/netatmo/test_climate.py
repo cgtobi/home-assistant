@@ -929,6 +929,7 @@ async def test_valves_service_turn_off(
     assert hass.states.get(climate_entity_entrada).attributes["hvac_modes"] == [
         "auto",
         "heat",
+        "cool",
     ]
 
     # Test turning valve off
