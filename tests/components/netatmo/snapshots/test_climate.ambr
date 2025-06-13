@@ -8,6 +8,7 @@
       'hvac_modes': list([
         <HVACMode.AUTO: 'auto'>,
         <HVACMode.HEAT: 'heat'>,
+        <HVACMode.COOL: 'cool'>,
       ]),
       'max_temp': 30,
       'min_temp': 7,
@@ -56,6 +57,7 @@
       'hvac_modes': list([
         <HVACMode.AUTO: 'auto'>,
         <HVACMode.HEAT: 'heat'>,
+        <HVACMode.COOL: 'cool'>,
       ]),
       'max_temp': 30,
       'min_temp': 7,
@@ -85,6 +87,7 @@
       'hvac_modes': list([
         <HVACMode.AUTO: 'auto'>,
         <HVACMode.HEAT: 'heat'>,
+        <HVACMode.COOL: 'cool'>,
       ]),
       'max_temp': 30,
       'min_temp': 7,
@@ -136,6 +139,7 @@
       'hvac_modes': list([
         <HVACMode.AUTO: 'auto'>,
         <HVACMode.HEAT: 'heat'>,
+        <HVACMode.COOL: 'cool'>,
       ]),
       'max_temp': 30,
       'min_temp': 7,
@@ -168,6 +172,7 @@
       'hvac_modes': list([
         <HVACMode.AUTO: 'auto'>,
         <HVACMode.HEAT: 'heat'>,
+        <HVACMode.COOL: 'cool'>,
       ]),
       'max_temp': 30,
       'min_temp': 7,
@@ -218,6 +223,7 @@
       'hvac_modes': list([
         <HVACMode.AUTO: 'auto'>,
         <HVACMode.HEAT: 'heat'>,
+        <HVACMode.COOL: 'cool'>,
       ]),
       'max_temp': 30,
       'min_temp': 7,
@@ -250,6 +256,7 @@
       'hvac_modes': list([
         <HVACMode.AUTO: 'auto'>,
         <HVACMode.HEAT: 'heat'>,
+        <HVACMode.COOL: 'cool'>,
       ]),
       'max_temp': 30,
       'min_temp': 7,
@@ -301,6 +308,7 @@
       'hvac_modes': list([
         <HVACMode.AUTO: 'auto'>,
         <HVACMode.HEAT: 'heat'>,
+        <HVACMode.COOL: 'cool'>,
       ]),
       'max_temp': 30,
       'min_temp': 7,
@@ -334,6 +342,7 @@
         <HVACMode.AUTO: 'auto'>,
         <HVACMode.HEAT: 'heat'>,
         <HVACMode.OFF: 'off'>,
+        <HVACMode.COOL: 'cool'>,
       ]),
       'max_temp': 30,
       'min_temp': 7,
@@ -385,6 +394,7 @@
         <HVACMode.AUTO: 'auto'>,
         <HVACMode.HEAT: 'heat'>,
         <HVACMode.OFF: 'off'>,
+        <HVACMode.COOL: 'cool'>,
       ]),
       'max_temp': 30,
       'min_temp': 7,

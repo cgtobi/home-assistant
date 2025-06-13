@@ -132,6 +132,16 @@ class NetatmoScheduleSelect(NetatmoBaseEntity, SelectEntity):
         self.hass.data[DOMAIN][DATA_SCHEDULES][self.home.entity_id] = (
             self.home.schedules
         )
-        self._attr_options = [
-            schedule.name for schedule in self.home.schedules.values() if schedule.name
+
+    def get_selected_schedule(self) -> str | None:
+        """Return the selected schedule."""
+        selected_schedule = self.home.get_selected_schedule()
+        return selected_schedule.name if selected_schedule else None
+
+    def get_available_schedules(self) -> list[str]:
+        """Return the available schedules."""
+        return [
+            schedule.name
+            for schedule in self.home.get_available_schedules()
+            if schedule.name
         ]
