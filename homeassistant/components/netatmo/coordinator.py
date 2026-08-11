@@ -59,6 +59,7 @@ from .device import (
     async_disabled_netatmo_ids,
     async_register_parent_devices,
     async_sync_home_disabled_state,
+    netatmo_module_parents,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -183,6 +184,7 @@ class NetatmoDataHandler:
         self.cameras: dict[str, str] = {}
         self.events: dict[str, dict] = {}
         self.parent_device_ids: dict[str, str] = {}
+        self.module_parents: dict[str, str] = {}
         self.home_device_ids: list[str] = []
 
     async def async_setup(self) -> None:
@@ -209,13 +211,12 @@ class NetatmoDataHandler:
         await self.subscribe(ACCOUNT, ACCOUNT, None)
 
         # Parents must exist before a platform links a child to one
+        self.module_parents = netatmo_module_parents(self.account)
         self.parent_device_ids = async_register_parent_devices(
-            self.hass, self.config_entry, self.account
+            self.hass, self.config_entry, self.account, self.module_parents
         )
         self.home_device_ids = [
-            self.parent_device_ids[home_id]
-            for home_id in self.account.all_home_names
-            if home_id in self.parent_device_ids
+            self.parent_device_ids[home_id] for home_id in self.account.all_home_names
         ]
         async_sync_home_disabled_state(
             self.hass, self.config_entry, self.home_device_ids
